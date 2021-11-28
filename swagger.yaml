@@ -1,0 +1,58 @@
+openapi: "3.0.0"
+info:
+  title: Ecommerce Tshirt Store API
+  description: making a backing api for an ecomm tshirt store
+  version: 1.1.0
+  contact:
+    email: rohitsah0728@gmail.com
+    url: "https://rohit23421.github.io/"
+
+# servers:
+#   - url: "https://localhost:4000/api/v1"
+#     description: for localhost - secure
+#   - url: "https://localhost:4000/api/v1"
+#     description: for localhost - regular
+
+servers:
+  - url: "{protocol}://localhost:4000/api/{version}"
+    description: for localhost
+    variables:
+      version:
+        enum:
+          - v1
+          - v2
+        default: v1
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+paths:
+  /dummy:
+    get:
+      tags:
+        - Home
+      summary: returns a greet message from docs app
+      responses:
+        200:
+          description: All good and success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "mystring"
+          400:
+            description: BAD REQUEST
+          500:
+            description: INTERNAL SERVER ERROR
