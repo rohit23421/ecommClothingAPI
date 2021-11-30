@@ -17,16 +17,30 @@ app.use(express.urlencoded({ extended: true }));
 
 //for cookies and fileUpload middleware
 app.use(cookieParser());
-app.use(fileUpload());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
+//just a temp check
+app.set("view engine", "ejs");
 
 //morgan middleware which is a logger
 app.use(morgan("tiny"));
 
 //importing routes here
 const home = require("./routes/home"); //importing home route as home here
+const user = require("./routes/user");
 
 //router middleware
 app.use("/api/v1", home); //means to go to /api/v1 and them {home} function will take care of it and will execute
+app.use("/api/v1", user);
+
+app.get("/signuptest", (req, res) => {
+  res.render("signupTest");
+});
 
 //exporting appjs to indexjs
 module.exports = app;
