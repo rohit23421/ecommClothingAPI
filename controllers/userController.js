@@ -174,3 +174,40 @@ exports.passwordReset = BigPromise(async (req, res, next) => {
   //send a json response or send token
   cookieToken(user, res);
 });
+
+//infomation about the loggedIn user
+exports.getLoggedInUserDetails = BigPromise(async (req, res, next) => {
+  //find the user by id that we have injected in the user.js moddleware using jwt and now accessing the id property of the user that we inserted
+  const user = await User.findById(req.user.id);
+
+  //send response and user data
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+//changing the password
+exports.changePassword = BigPromise(async (req, res, next) => {
+  const userId = req.user.id;
+
+  const user = await User.findById(userId).select("+password");
+
+  //check if the new password & the old passwrod mathces or not
+  const isCorrectOldPassword = await user.isValidatedPassword(
+    req.body.oldPassword
+  );
+
+  //if password doesnt match
+  if (!isCorrectOldPassword) {
+    return next(new CustomError("Old password is incorrect", 400));
+  }
+
+  //if old and new matches
+  user.password = req.body.password;
+
+  await user.save();
+
+  //since the info has been changed then we need to update the cookietoken
+  cookieToken(user, res);
+});
