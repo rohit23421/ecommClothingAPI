@@ -211,3 +211,126 @@ exports.changePassword = BigPromise(async (req, res, next) => {
   //since the info has been changed then we need to update the cookietoken
   cookieToken(user, res);
 });
+
+//update user details controller
+exports.updateUserDetails = BigPromise(async (req, res, next) => {
+  //as user will send a data so we need to hold it as an object and use it later
+  const newData = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+
+  //check if the request is sending a photo or not
+  if (req.files) {
+    //find the user by ID and holding it to be updated later on
+    const user = await User.findById(req.user.id);
+
+    //holding the photo in a variable
+    const imageId = user.photo.id;
+
+    //find the photo by ID from the cloudinary database and destroy/delete it
+    const resp = await cloudinary.v2.uploader.destroy(imageId);
+
+    //now upload the new photo the user has sent
+    const result = await cloudinary.v2.uploader.upload(
+      req.files.photo.tempFilePath,
+      {
+        folder: "users",
+        width: 150,
+        crop: "scale",
+      }
+    );
+
+    newData.photo = {
+      id: result.public_id,
+      secure_url: result.secure_url,
+    };
+  }
+
+  //holding a reference of this user
+  const user = await User.findByIdAndUpdate(req.user.id, newData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+//for admin route that gives all users
+exports.adminAllUser = BigPromise(async (req, res, next) => {
+  //send all the data for the admin
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+//admin gets a single user based on ID from the DB
+exports.admingetOneUser = BigPromise(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    next(new CustomError("No user found", 400));
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+exports.adminUpdateOneUserDetails = BigPromise(async (req, res, next) => {
+  //as user will send a data so we need to hold it as an object and use it later
+  const newData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  //holding a reference of this user
+  const user = await User.findByIdAndUpdate(req.params.id, newData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+exports.adminDeleteOneUser = BigPromise(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  //check if the user is present or not
+  if (!user) {
+    return next(new CustomError("No such user found", 401));
+  }
+
+  //if user is present
+  const imageId = user.photo.id;
+
+  await cloudinary.v2.uploader.destroy(imageId);
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+//manager all users without sending all data of users like ont showing the personal details
+exports.managerAllUser = BigPromise(async (req, res, next) => {
+  //send all the data for the manager
+  const users = await User.find({ role: "user" });
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
