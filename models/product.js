@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     required: [true, "Please provide a product name"],
     trim: true,
@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema({
       "Please select categories from - short-sleeves, long-sleeves, sweat-shirts, hoodies",
     ],
     enum: {
-      values: ["short-sleeves", "long-sleeves", "sweat-shirts", "hoodies"],
+      values: ["shortsleeves", "longsleeves", "sweatshirts", "hoodies"],
       message:
         "Please select category ONLY from - short-sleeves, long-sleeves, sweat-shirts and hoodies",
     },
