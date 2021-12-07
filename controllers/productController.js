@@ -212,7 +212,7 @@ exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
     //destroy the existing images
     for (let index = 0; index < product.photos.length; index++) {
       const res = await cloudinary.v2.uploader.destroy(
-        products.photos[index].id
+        product.photos[index].id
       );
     }
     //upload and save the images

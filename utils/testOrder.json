@@ -1,0 +1,25 @@
+{
+    "shippingInfo": {
+        "address": "Sripuria, Near Nepali Mandir",
+        "city": "Tinsukia",
+        "phoneNo": "7325962040",
+        "postalCode": "786125",
+        "state": "Assam",
+        "country": "India"
+    },
+    "orderItems": [
+        {
+            "name": "Iron Man tshirt",
+            "quantity": 1,
+            "image": "https://res.cloudinary.com/rohit23421/image/upload/v1638639367/products/crlyfllv3baojhj3rbav.jpg",
+            "price": 499,
+            "product": "61aba720d41bb65c0d14dcc6"
+        }
+    ],
+    "paymentInfo": {
+        "id": "testString"
+    },
+    "taxAmount": 40,
+    "shippingAmount": 10,
+    "totalAmount": 100
+}

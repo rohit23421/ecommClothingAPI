@@ -35,12 +35,14 @@ const home = require("./routes/home"); //importing home route as home here
 const user = require("./routes/user");
 const product = require("./routes/product");
 const payment = require("./routes/payment");
+const order = require("./routes/order");
 
 //router middleware
 app.use("/api/v1", home); //means to go to /api/v1 and them {home} function will take care of it and will execute
 app.use("/api/v1", user);
 app.use("/api/v1", product);
 app.use("/api/v1", payment);
+app.use("/api/v1", order);
 
 app.get("/signuptest", (req, res) => {
   res.render("signupTest");
